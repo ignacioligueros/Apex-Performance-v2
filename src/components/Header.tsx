@@ -27,7 +27,7 @@ export const Header = ({
   onLogin
 }: HeaderProps) => {
   return (
-    <header className="flex flex-col md:flex-row items-center justify-between gap-4 px-6 py-4 bg-[#0a0d14]/90 border-b border-slate-800/80 backdrop-blur-md text-slate-100 shrink-0 z-20">
+    <header className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 px-4 py-3 sm:px-6 sm:py-4 bg-[#0a0d14]/90 border-b border-slate-800/80 backdrop-blur-md text-slate-100 shrink-0 z-20">
       
       {/* Title Section matching reference image */}
       <div className="flex flex-col items-center md:items-start text-center md:text-left">

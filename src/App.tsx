@@ -366,7 +366,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080b11] text-slate-100 font-sans selection:bg-teal-500/30 selection:text-teal-200 flex flex-col h-screen overflow-hidden">
+    <div className="min-h-screen bg-[#080b11] text-slate-100 font-sans selection:bg-teal-500/30 selection:text-teal-200 flex flex-col lg:h-screen lg:overflow-hidden">
       
       {/* Top Header matching reference image */}
       <Header
@@ -383,11 +383,11 @@ export default function App() {
       />
 
       {/* Main Workspace Grid */}
-      <main className="flex-1 overflow-y-auto lg:overflow-hidden p-4 sm:p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 h-full max-w-[1700px] mx-auto">
+      <main className="flex-1 lg:overflow-hidden p-4 sm:p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:h-full max-w-[1700px] mx-auto">
           
           {/* Column 1: Workout Telemetry (Left) */}
-          <div className="lg:col-span-3 xl:col-span-3 h-full min-h-[480px]">
+          <div className="lg:col-span-3 xl:col-span-3 lg:h-full min-h-[480px]">
             <AthleteHubPanel
               metrics={metrics}
               syncing={syncing}
@@ -411,7 +411,7 @@ export default function App() {
           </div>
 
           {/* Column 2: Performance Analysis (Center) */}
-          <div className="lg:col-span-4 xl:col-span-5 h-full min-h-[480px]">
+          <div className="lg:col-span-4 xl:col-span-5 lg:h-full min-h-[480px]">
             <AnalysisPanel 
               metrics={metrics} 
               loading={loading}
@@ -422,7 +422,7 @@ export default function App() {
           </div>
 
           {/* Column 3: Consult Apex Chat (Right) */}
-          <div className="lg:col-span-5 xl:col-span-4 h-full min-h-[480px]">
+          <div className="lg:col-span-5 xl:col-span-4 lg:h-full min-h-[480px]">
             <ChatPanel
               chatHistory={chatHistory}
               setChatHistory={setChatHistory}
