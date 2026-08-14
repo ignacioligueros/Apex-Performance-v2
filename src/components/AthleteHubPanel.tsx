@@ -110,8 +110,11 @@ export const AthleteHubPanel = ({
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="bg-[#1c1622] border border-rose-900/40 rounded-xl p-3 flex flex-col justify-center items-center group">
-            <span className="text-[10px] text-slate-400 font-mono mb-1 text-center">TINDEQ MAX</span>
+          <div className="bg-[#1c1622] border border-rose-900/40 rounded-xl p-3 flex flex-col justify-center items-center group relative">
+            <span className="text-[10px] text-slate-400 font-mono mb-1 text-center flex items-center gap-1">
+              TINDEQ MAX
+              {metrics.strength.tindeqMax > 0 && <span className="text-teal-500/50" title="Guardado en la nube">☁️</span>}
+            </span>
             <div className="flex items-end gap-1">
               <input 
                 type="number" 
