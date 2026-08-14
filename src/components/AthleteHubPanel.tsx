@@ -42,49 +42,61 @@ export const AthleteHubPanel = ({
 
         {/* Small Bar Chart for TSS */}
         <div className="h-24 w-full relative mb-3">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={metrics.history} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#0f172a', borderColor: '#0d9488', borderRadius: '8px', color: '#f8fafc', fontSize: '12px' }}
-                formatter={(val: any) => [`${val} TSS`, 'Load']}
-                labelStyle={{ display: 'none' }}
-                cursor={{ fill: '#1e293b', opacity: 0.4 }}
-              />
-              <Bar dataKey="tss" radius={[4, 4, 0, 0]}>
-                {metrics.history.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={getTssColor(entry.tss)} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+          {metrics.history.length === 0 ? (
+            <div className="h-full w-full rounded-2xl bg-[#151e2b]/50 border border-teal-900/30 flex items-center justify-center text-[11px] font-mono text-slate-500 text-center px-4">
+              Sin entrenamientos cargados. Sincroniza Strava para ver tu carga TSS.
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={metrics.history} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#0d9488', borderRadius: '8px', color: '#f8fafc', fontSize: '12px' }}
+                  formatter={(val: any) => [`${val} TSS`, 'Load']}
+                  labelStyle={{ display: 'none' }}
+                  cursor={{ fill: '#1e293b', opacity: 0.4 }}
+                />
+                <Bar dataKey="tss" radius={[4, 4, 0, 0]}>
+                  {metrics.history.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={getTssColor(entry.tss)} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </div>
 
         {/* List of recent sessions */}
         <div className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1 custom-scrollbar">
-          {metrics.history.map((item, idx) => (
-            <button
-              key={idx}
-              onClick={() => onSelectSession(item)}
-              className="w-full bg-[#151e2b]/80 border border-teal-900/30 hover:border-teal-500/40 rounded-xl px-3 py-2 flex items-center justify-between transition-colors text-left"
-            >
-              <div className="flex flex-col min-w-0 mr-2">
-                <span className="text-[9px] font-mono text-slate-500">
-                  {item.date}
+          {metrics.history.length === 0 ? (
+            <div className="p-3 text-center text-xs text-slate-500 font-mono bg-[#151e2b]/40 rounded-xl border border-teal-900/20">
+              No hay historial de actividades
+            </div>
+          ) : (
+            metrics.history.map((item, idx) => (
+              <button
+                key={idx}
+                onClick={() => onSelectSession(item)}
+                className="w-full bg-[#151e2b]/80 border border-teal-900/30 hover:border-teal-500/40 rounded-xl px-3 py-2 flex items-center justify-between transition-colors text-left"
+              >
+                <div className="flex flex-col min-w-0 mr-2">
+                  <span className="text-[9px] font-mono text-slate-500">
+                    {item.date}
+                  </span>
+                  <span className="font-sans font-medium text-slate-300 text-xs truncate leading-tight">
+                    {item.title.replace(/^Sesión\s+/, '')}
+                  </span>
+                </div>
+                <span className={`shrink-0 font-mono font-bold px-2 py-0.5 rounded-md text-[10px] ${
+                  item.tss >= 80 ? 'bg-rose-950/60 text-rose-300' :
+                  item.tss >= 50 ? 'bg-amber-950/60 text-amber-300' :
+                  item.tss >= 30 ? 'bg-teal-950/60 text-teal-300' :
+                  'bg-blue-950/60 text-blue-300'
+                }`}>
+                  {item.tss} TSS
                 </span>
-                <span className="font-sans font-medium text-slate-300 text-xs truncate leading-tight">
-                  {item.title.replace(/^Sesión\s+/, '')}
-                </span>
-              </div>
-              <span className={`shrink-0 font-mono font-bold px-2 py-0.5 rounded-md text-[10px] ${
-                item.tss >= 80 ? 'bg-rose-950/60 text-rose-300' :
-                item.tss >= 50 ? 'bg-amber-950/60 text-amber-300' :
-                item.tss >= 30 ? 'bg-teal-950/60 text-teal-300' :
-                'bg-blue-950/60 text-blue-300'
-              }`}>
-                {item.tss} TSS
-              </span>
-            </button>
-          ))}
+              </button>
+            ))
+          )}
         </div>
       </div>
 

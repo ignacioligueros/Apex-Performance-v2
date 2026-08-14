@@ -41,7 +41,9 @@ export const AnalysisPanel = ({ metrics, loading, onRequestAnalysis }: AnalysisP
           
           {!metrics.telemetryData || metrics.telemetryData.length === 0 ? (
             <div className="h-44 w-full flex items-center justify-center text-slate-500 font-mono text-xs text-center px-4">
-              Sin telemetría detallada para esta sesión histórica.
+              {metrics.avgPower === 0 && metrics.history.length === 0
+                ? 'Conecta y sincroniza Strava para cargar la telemetría y gráficos de tu entrenamiento.'
+                : 'Sin telemetría detallada segundo a segundo para esta sesión.'}
             </div>
           ) : (
             <div className="h-44 w-full">

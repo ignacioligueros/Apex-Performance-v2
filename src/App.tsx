@@ -24,21 +24,21 @@ export default function App() {
   const [stravaConnected, setStravaConnected] = useState(false);
   
   useEffect(() => {
-    // Clear old sheets data from local storage
-    localStorage.clear();
-
-    // Check Strava connection status
-    fetch('/api/strava/status')
-      .then(res => res.json())
-      .then(data => setStravaConnected(data.connected))
-      .catch(console.error);
+    // Check Strava connection status from local storage
+    const storedToken = localStorage.getItem('strava_access_token');
+    if (storedToken) {
+      setStravaConnected(true);
+    }
 
     const handleMessage = (event: MessageEvent) => {
       const origin = event.origin;
-      if (!origin.endsWith('.run.app') && !origin.includes('localhost')) {
+      if (!origin.endsWith('.run.app') && !origin.includes('localhost') && !origin.endsWith('.vercel.app')) {
         return;
       }
       if (event.data?.type === 'OAUTH_AUTH_SUCCESS') {
+        if (event.data.token) {
+          localStorage.setItem('strava_access_token', event.data.token);
+        }
         setStravaConnected(true);
         handleStravaSync();
       }
@@ -66,10 +66,14 @@ export default function App() {
   const handleStravaSync = async () => {
     setSyncing(true);
     try {
-      const response = await fetch('/api/strava/activities');
+      const token = localStorage.getItem('strava_access_token');
+      const response = await fetch('/api/strava/activities', {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
       if (!response.ok) {
         if (response.status === 401) {
           setStravaConnected(false);
+          localStorage.removeItem('strava_access_token');
           throw new Error('Strava connection expired');
         }
         throw new Error('Failed to fetch Strava activities');
@@ -125,7 +129,10 @@ export default function App() {
 
   const fetchStravaStreams = async (activityId: string) => {
     try {
-      const response = await fetch(`/api/strava/activities/${activityId}/streams`);
+      const token = localStorage.getItem('strava_access_token');
+      const response = await fetch(`/api/strava/activities/${activityId}/streams`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
       if (!response.ok) return;
       const streams = await response.json();
       
