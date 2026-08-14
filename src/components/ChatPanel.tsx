@@ -106,21 +106,26 @@ export const ChatPanel = ({ chatHistory, setChatHistory, onSendMessage, loading,
 
       {/* Input Box */}
       <div className="pt-4 mt-3 border-t border-slate-800/80 shrink-0">
-        <div className="flex gap-2">
-          <input
-            type="text"
+        <div className="flex gap-2 items-end">
+          <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(e); }}
-            placeholder="Type your question here..."
-            className="flex-1 bg-[#090d14] text-slate-100 placeholder-slate-500 px-4 py-3 rounded-xl border border-slate-800 focus:outline-none focus:border-teal-500 text-xs sm:text-sm transition-all"
+            onKeyDown={(e) => { 
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit(e); 
+              }
+            }}
+            placeholder="Type your question here... (Shift+Enter for new line)"
+            rows={1}
+            className="flex-1 bg-[#090d14] text-slate-100 placeholder-slate-500 px-4 py-3 rounded-xl border border-slate-800 focus:outline-none focus:border-teal-500 text-xs sm:text-sm transition-all resize-y min-h-[44px] max-h-[150px]"
             disabled={loading}
           />
           <button
             type="button"
             onClick={handleSubmit}
             disabled={loading || !message.trim()}
-            className="bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 px-4 py-3 rounded-xl disabled:opacity-40 transition-colors shadow-lg active:scale-95 shrink-0"
+            className="bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 px-4 py-3 rounded-xl disabled:opacity-40 transition-colors shadow-lg active:scale-95 shrink-0 h-[44px] flex items-center justify-center"
           >
             <Send className="w-4 h-4" />
           </button>
