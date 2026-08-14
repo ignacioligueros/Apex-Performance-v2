@@ -292,9 +292,13 @@ export default function App() {
       let botResponse = data.text || '';
 
       // Parse TENDON_STATE tag
-      const tendonMatch = botResponse.match(/\[TENDON_STATE:\s*(Optimal|Recovering|Fatigued)\]/i);
+      const tendonMatch = botResponse.match(/\[TENDON_STATE:\s*(Optimal|Recovering|Fatigued|Óptimo|Optimo|Recuperando|Fatigado)\]/i);
       if (tendonMatch) {
-        const newState = tendonMatch[1];
+        let newState = tendonMatch[1];
+        if (newState.toLowerCase() === 'óptimo' || newState.toLowerCase() === 'optimo') newState = 'Optimal';
+        if (newState.toLowerCase() === 'recuperando') newState = 'Recovering';
+        if (newState.toLowerCase() === 'fatigado') newState = 'Fatigued';
+        
         setMetrics(prev => {
           const newMetrics = {
             ...prev,
@@ -304,7 +308,7 @@ export default function App() {
           return newMetrics;
         });
         // Remove the tag from the text shown to the user
-        botResponse = botResponse.replace(/\[TENDON_STATE:\s*(Optimal|Recovering|Fatigued)\]/i, '').trim();
+        botResponse = botResponse.replace(/\[TENDON_STATE:\s*(Optimal|Recovering|Fatigued|Óptimo|Optimo|Recuperando|Fatigado)\]/i, '').trim();
       }
 
       const finalHistory = [...newHistory, { role: 'model', parts: [{ text: botResponse }] }];
@@ -379,13 +383,17 @@ export default function App() {
               syncing={syncing}
               onSelectSession={handleSelectHistoricalSession}
               onUpdateStrength={(field, value) => {
-                setMetrics(prev => ({
-                  ...prev,
-                  strength: {
+                setMetrics(prev => {
+                  const newStrength = {
                     ...prev.strength,
                     [field]: value
-                  }
-                }));
+                  };
+                  saveStrengthData(newStrength);
+                  return {
+                    ...prev,
+                    strength: newStrength
+                  };
+                });
               }}
             />
           </div>
