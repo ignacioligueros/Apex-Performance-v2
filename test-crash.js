@@ -1,0 +1,9 @@
+async function run() {
+    const res = await fetch('http://localhost:3000/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ history: [], message: 'Hola', model: 'gemini-3.5-flash' })
+    });
+    console.log(res.status);
+}
+run();

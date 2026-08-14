@@ -1,0 +1,21 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and data",
+      "type": "object",
+      "properties": {
+        "chatHistory": {
+          "type": "array",
+          "description": "Chat history"
+        }
+      }
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User documents containing their data."
+    }
+  }
+}

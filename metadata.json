@@ -1,0 +1,6 @@
+{
+  "name": "Apex Performance",
+  "description": "Sports performance agent for cycling and bouldering.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
