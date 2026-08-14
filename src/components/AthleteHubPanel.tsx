@@ -5,6 +5,7 @@ import { Mountain, Database, Flame, ShieldAlert, Activity } from 'lucide-react';
 interface AthleteHubPanelProps {
   metrics: WorkoutMetrics;
   syncing: boolean;
+  isLoggedIn?: boolean;
   onSelectSession: (session: HistoricalSession) => void;
   onUpdateStrength?: (field: 'tindeqMax' | 'readiness', value: any) => void;
 }
@@ -12,6 +13,7 @@ interface AthleteHubPanelProps {
 export const AthleteHubPanel = ({
   metrics,
   syncing,
+  isLoggedIn,
   onSelectSession,
   onUpdateStrength
 }: AthleteHubPanelProps) => {
@@ -113,7 +115,11 @@ export const AthleteHubPanel = ({
           <div className="bg-[#1c1622] border border-rose-900/40 rounded-xl p-3 flex flex-col justify-center items-center group relative">
             <span className="text-[10px] text-slate-400 font-mono mb-1 text-center flex items-center gap-1">
               TINDEQ MAX
-              {metrics.strength.tindeqMax > 0 && <span className="text-teal-500/50" title="Guardado en la nube">☁️</span>}
+              {metrics.strength.tindeqMax > 0 && (
+                isLoggedIn 
+                  ? <span className="text-teal-500/80 cursor-help" title="Guardado en tu cuenta en la nube">☁️</span>
+                  : <span className="text-rose-500/80 cursor-help" title="Inicia sesión arriba para guardar este dato">⚠️</span>
+              )}
             </span>
             <div className="flex items-end gap-1">
               <input 

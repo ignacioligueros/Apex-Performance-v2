@@ -190,6 +190,10 @@ export default function App() {
           }
         }
         setIsChatLoaded(true);
+      }, (error) => {
+        console.error('Error fetching from Firestore:', error);
+        alert('Error leyendo de la nube: ' + error.message);
+        setIsChatLoaded(true);
       });
       return () => unsubscribe();
     } else {
@@ -202,8 +206,9 @@ export default function App() {
     if (!user) return;
     try {
       await setDoc(doc(db, 'users', user.uid), { chatHistory: newHistory }, { merge: true });
-    } catch (e) {
+    } catch (e: any) {
       console.error('Error saving chat history to Firestore:', e);
+      alert('Error guardando chat: ' + e.message);
     }
   };
 
@@ -211,8 +216,9 @@ export default function App() {
     if (!user) return;
     try {
       await setDoc(doc(db, 'users', user.uid), { strength: newStrength }, { merge: true });
-    } catch (e) {
+    } catch (e: any) {
       console.error('Error saving strength data to Firestore:', e);
+      alert('Error guardando fuerza: ' + e.message);
     }
   };
 
@@ -299,14 +305,16 @@ export default function App() {
         if (newState.toLowerCase() === 'recuperando') newState = 'Recovering';
         if (newState.toLowerCase() === 'fatigado') newState = 'Fatigued';
         
-        setMetrics(prev => {
-          const newMetrics = {
-            ...prev,
-            strength: { ...prev.strength, readiness: newState as any }
-          };
-          saveStrengthData(newMetrics.strength);
-          return newMetrics;
-        });
+        const newStrength = {
+          ...metrics.strength,
+          readiness: newState as any
+        };
+        saveStrengthData(newStrength);
+        
+        setMetrics(prev => ({
+          ...prev,
+          strength: newStrength
+        }));
         // Remove the tag from the text shown to the user
         botResponse = botResponse.replace(/\[TENDON_STATE:\s*(Optimal|Recovering|Fatigued|Óptimo|Optimo|Recuperando|Fatigado)\]/i, '').trim();
       }
@@ -381,19 +389,18 @@ export default function App() {
             <AthleteHubPanel
               metrics={metrics}
               syncing={syncing}
+              isLoggedIn={!!user}
               onSelectSession={handleSelectHistoricalSession}
               onUpdateStrength={(field, value) => {
-                setMetrics(prev => {
-                  const newStrength = {
-                    ...prev.strength,
-                    [field]: value
-                  };
-                  saveStrengthData(newStrength);
-                  return {
-                    ...prev,
-                    strength: newStrength
-                  };
-                });
+                const newStrength = {
+                  ...metrics.strength,
+                  [field]: value
+                };
+                saveStrengthData(newStrength);
+                setMetrics(prev => ({
+                  ...prev,
+                  strength: newStrength
+                }));
               }}
             />
           </div>
