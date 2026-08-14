@@ -305,16 +305,18 @@ export default function App() {
         if (newState.toLowerCase() === 'recuperando') newState = 'Recovering';
         if (newState.toLowerCase() === 'fatigado') newState = 'Fatigued';
         
-        const newStrength = {
-          ...metrics.strength,
-          readiness: newState as any
-        };
-        saveStrengthData(newStrength);
+        setMetrics(prev => {
+          const newStrength = {
+            ...prev.strength,
+            readiness: newState as any
+          };
+          saveStrengthData(newStrength);
+          return {
+            ...prev,
+            strength: newStrength
+          };
+        });
         
-        setMetrics(prev => ({
-          ...prev,
-          strength: newStrength
-        }));
         // Remove the tag from the text shown to the user
         botResponse = botResponse.replace(/\[TENDON_STATE:\s*(Optimal|Recovering|Fatigued|Óptimo|Optimo|Recuperando|Fatigado)\]/i, '').trim();
       }
@@ -392,15 +394,18 @@ export default function App() {
               isLoggedIn={!!user}
               onSelectSession={handleSelectHistoricalSession}
               onUpdateStrength={(field, value) => {
-                const newStrength = {
-                  ...metrics.strength,
-                  [field]: value
-                };
-                saveStrengthData(newStrength);
-                setMetrics(prev => ({
-                  ...prev,
-                  strength: newStrength
-                }));
+                setMetrics(prev => {
+                  const newStrength = {
+                    ...prev.strength,
+                    [field]: value
+                  };
+                  // Safely call save inside the setter to ensure we have the absolute latest state
+                  saveStrengthData(newStrength);
+                  return {
+                    ...prev,
+                    strength: newStrength
+                  };
+                });
               }}
             />
           </div>

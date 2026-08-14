@@ -1,6 +1,6 @@
 import { WorkoutMetrics, HistoricalSession } from '../types';
 import { ResponsiveContainer, BarChart, Bar, Tooltip, Cell } from 'recharts';
-import { Mountain, Database, Flame, ShieldAlert, Activity } from 'lucide-react';
+import { Mountain, Database, Flame, ShieldAlert, Activity, Cloud, AlertCircle } from 'lucide-react';
 
 interface AthleteHubPanelProps {
   metrics: WorkoutMetrics;
@@ -117,8 +117,8 @@ export const AthleteHubPanel = ({
               TINDEQ MAX
               {metrics.strength.tindeqMax > 0 && (
                 isLoggedIn 
-                  ? <span className="text-teal-500/80 cursor-help" title="Guardado en tu cuenta en la nube">☁️</span>
-                  : <span className="text-rose-500/80 cursor-help" title="Inicia sesión arriba para guardar este dato">⚠️</span>
+                  ? <Cloud className="w-3.5 h-3.5 text-teal-400 cursor-help" title="Guardado en tu cuenta en la nube" />
+                  : <AlertCircle className="w-3.5 h-3.5 text-rose-400 cursor-help" title="Inicia sesión arriba para guardar este dato" />
               )}
             </span>
             <div className="flex items-end gap-1">
