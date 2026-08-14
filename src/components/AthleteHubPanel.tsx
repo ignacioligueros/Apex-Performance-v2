@@ -6,12 +6,14 @@ interface AthleteHubPanelProps {
   metrics: WorkoutMetrics;
   syncing: boolean;
   onSelectSession: (session: HistoricalSession) => void;
+  onUpdateStrength?: (field: 'tindeqMax' | 'readiness', value: any) => void;
 }
 
 export const AthleteHubPanel = ({
   metrics,
   syncing,
-  onSelectSession
+  onSelectSession,
+  onUpdateStrength
 }: AthleteHubPanelProps) => {
 
   const maxTSS = Math.max(...metrics.history.map(h => h.tss), 100);
@@ -108,10 +110,16 @@ export const AthleteHubPanel = ({
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="bg-[#1c1622] border border-rose-900/40 rounded-xl p-3 flex flex-col justify-center items-center">
+          <div className="bg-[#1c1622] border border-rose-900/40 rounded-xl p-3 flex flex-col justify-center items-center group">
             <span className="text-[10px] text-slate-400 font-mono mb-1 text-center">TINDEQ MAX</span>
             <div className="flex items-end gap-1">
-              <span className="text-xl font-bold text-rose-400 font-mono leading-none">{metrics.strength.tindeqMax}</span>
+              <input 
+                type="number" 
+                value={metrics.strength.tindeqMax || ''}
+                onChange={(e) => onUpdateStrength?.('tindeqMax', Number(e.target.value))}
+                className="w-16 bg-transparent border-b border-rose-900/0 group-hover:border-rose-900/50 text-xl font-bold text-rose-400 font-mono text-center focus:outline-none focus:border-rose-500 transition-colors"
+                placeholder="0"
+              />
               <span className="text-[10px] text-rose-400/70 mb-0.5">kg</span>
             </div>
             <span className="text-[9px] text-slate-500 mt-1">{metrics.strength.edgeSize}mm Edge</span>
@@ -128,7 +136,8 @@ export const AthleteHubPanel = ({
               metrics.strength.readiness === 'Optimal' ? 'text-teal-400' :
               metrics.strength.readiness === 'Recovering' ? 'text-amber-400' : 'text-rose-400'
             }`}>
-              {metrics.strength.readiness}
+              {metrics.strength.readiness === 'Optimal' ? 'Óptimo' :
+               metrics.strength.readiness === 'Recovering' ? 'Recuperando' : 'Fatigado'}
             </span>
           </div>
         </div>

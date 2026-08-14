@@ -179,6 +179,15 @@ export default function App() {
           if (data.chatHistory) {
             setChatHistory(data.chatHistory);
           }
+          if (data.strength) {
+            setMetrics(prev => ({
+              ...prev,
+              strength: {
+                ...prev.strength,
+                ...data.strength
+              }
+            }));
+          }
         }
         setIsChatLoaded(true);
       });
@@ -195,6 +204,15 @@ export default function App() {
       await setDoc(doc(db, 'users', user.uid), { chatHistory: newHistory }, { merge: true });
     } catch (e) {
       console.error('Error saving chat history to Firestore:', e);
+    }
+  };
+
+  const saveStrengthData = async (newStrength: any) => {
+    if (!user) return;
+    try {
+      await setDoc(doc(db, 'users', user.uid), { strength: newStrength }, { merge: true });
+    } catch (e) {
+      console.error('Error saving strength data to Firestore:', e);
     }
   };
 
@@ -271,7 +289,23 @@ export default function App() {
       }
 
       const data = await response.json();
-      const botResponse = data.text || '';
+      let botResponse = data.text || '';
+
+      // Parse TENDON_STATE tag
+      const tendonMatch = botResponse.match(/\[TENDON_STATE:\s*(Optimal|Recovering|Fatigued)\]/i);
+      if (tendonMatch) {
+        const newState = tendonMatch[1];
+        setMetrics(prev => {
+          const newMetrics = {
+            ...prev,
+            strength: { ...prev.strength, readiness: newState as any }
+          };
+          saveStrengthData(newMetrics.strength);
+          return newMetrics;
+        });
+        // Remove the tag from the text shown to the user
+        botResponse = botResponse.replace(/\[TENDON_STATE:\s*(Optimal|Recovering|Fatigued)\]/i, '').trim();
+      }
 
       const finalHistory = [...newHistory, { role: 'model', parts: [{ text: botResponse }] }];
       setChatHistory(finalHistory);
@@ -344,6 +378,15 @@ export default function App() {
               metrics={metrics}
               syncing={syncing}
               onSelectSession={handleSelectHistoricalSession}
+              onUpdateStrength={(field, value) => {
+                setMetrics(prev => ({
+                  ...prev,
+                  strength: {
+                    ...prev.strength,
+                    [field]: value
+                  }
+                }));
+              }}
             />
           </div>
 
