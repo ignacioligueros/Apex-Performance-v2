@@ -21,7 +21,7 @@ const getGeminiClient = () => {
 };
 
 // Strava OAuth URL Generator
-app.get('/api/strava/url', (req: Request, res: Response) => {
+app.get(['/api/strava/url', '/strava/url'], (req: Request, res: Response) => {
   const { redirect_uri } = req.query;
   const params = new URLSearchParams({
     client_id: process.env.STRAVA_CLIENT_ID || '',
@@ -76,7 +76,7 @@ const handleOAuthCallback = async (req: Request, res: Response) => {
 app.get(['/auth/callback', '/auth/callback/', '/api/auth/callback'], handleOAuthCallback);
 
 // Strava Activities Fetcher
-app.get('/api/strava/activities', async (req: Request, res: Response) => {
+app.get(['/api/strava/activities', '/strava/activities'], async (req: Request, res: Response) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];
   if (!token) return res.status(401).json({ error: "Unauthorized" });
@@ -95,7 +95,7 @@ app.get('/api/strava/activities', async (req: Request, res: Response) => {
 });
 
 // Strava Streams Fetcher
-app.get('/api/strava/activities/:id/streams', async (req: Request, res: Response) => {
+app.get(['/api/strava/activities/:id/streams', '/strava/activities/:id/streams'], async (req: Request, res: Response) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];
   if (!token) return res.status(401).json({ error: "Unauthorized" });
@@ -114,12 +114,12 @@ app.get('/api/strava/activities/:id/streams', async (req: Request, res: Response
 });
 
 // Strava Status
-app.get('/api/strava/status', (_req: Request, res: Response) => {
+app.get(['/api/strava/status', '/strava/status'], (_req: Request, res: Response) => {
   res.json({ connected: true });
 });
 
 // Gemini Chat Endpoint
-app.post("/api/chat", async (req: Request, res: Response) => {
+app.post(['/api/chat', '/chat'], async (req: Request, res: Response) => {
   try {
     const { history, message, metrics, model = "gemini-3.5-flash" } = req.body;
     

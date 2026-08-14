@@ -28,6 +28,13 @@ export const googleSignIn = async (): Promise<{ user: User; accessToken: string 
   try {
     isSigningIn = true;
     const result = await signInWithPopup(auth, provider);
+    
+    // Validación de seguridad para usuario exclusivo
+    if (result.user.email !== 'ignacio.ligueros@gmail.com') {
+      await auth.signOut();
+      throw new Error('Acceso denegado: Esta aplicación es privada y solo ignacio.ligueros@gmail.com está autorizado para ingresar.');
+    }
+
     const credential = GoogleAuthProvider.credentialFromResult(result);
     if (!credential?.accessToken) {
       throw new Error('Failed to get access token from Firebase Auth');

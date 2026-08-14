@@ -226,8 +226,9 @@ export default function App() {
         setUser(result.user);
         setNeedsAuth(false);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Login failed:', err);
+      alert(err.message || 'Error al iniciar sesión con Google.');
     } finally {
       setLoading(false);
     }
