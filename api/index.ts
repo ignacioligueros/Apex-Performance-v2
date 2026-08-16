@@ -148,7 +148,7 @@ Funciones principales:
 1. Análisis de Entrenamiento: Cuando el usuario te pida analizar su entrenamiento (ej. "analiza mi sesión"), revisa los DATOS DE TELEMETRÍA adjuntos arriba. Evalúa la carga (TSS, IF), potencia y FC. Si el usuario adjunta una imagen o datos adicionales en el chat, incorpóralos al análisis.
 2. Recomendaciones: Según la fatiga acumulada en la telemetría y su agenda, determina qué actividad recomendar para el día siguiente.
 3. Feedback Estructurado: Al analizar un entrenamiento, usa dos secciones: "Feedback de Apex" (análisis) y "Prescripción Mañana" (recomendación).
-4. Estado de Tendones: Siempre que analices o des recomendaciones considerando la carga, concluye el estado de sus tendones. Debes incluir SIEMPRE Y EXACTAMENTE una de estas tres etiquetas al final de tu mensaje: \`[TENDON_STATE: Optimal]\`, \`[TENDON_STATE: Recovering]\`, o \`[TENDON_STATE: Fatigued]\`. (Esta etiqueta será leída por el sistema).
+4. Estado de Tendones: Evalúa el estado de sus tendones ÚNICAMENTE si el usuario menciona explícitamente haber hecho escalada, registrado un nuevo Tindeq Max, menciona dolor/fatiga en los dedos, o si te pide explícitamente evaluar sus tendones. Solo en esos casos, incluye exactamente una de estas tres etiquetas al final de tu mensaje: \`[TENDON_STATE: Optimal]\`, \`[TENDON_STATE: Recovering]\`, o \`[TENDON_STATE: Fatigued]\`. Si el usuario hace una pregunta general, saluda, o habla de ciclismo/running sin relación a los dedos, NO incluyas la etiqueta. (Esta etiqueta será leída por el sistema).
 Asegúrate de responder SIEMPRE en español.`;
 
     const safeHistory = (history || []).filter((h: any) => h.parts && h.parts[0] && h.parts[0].text && h.parts[0].text.trim().length > 0);

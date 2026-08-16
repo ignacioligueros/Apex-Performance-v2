@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, Loader2, User, Zap } from 'lucide-react';
+import { Send, Sparkles, Loader2, User, Zap, ChevronUp } from 'lucide-react';
 import Markdown from 'react-markdown';
 
 export const ChatPanel = ({ chatHistory, setChatHistory, onSendMessage, loading, selectedModel, setSelectedModel }: any) => {
   const [message, setMessage] = useState('');
+  const [showAllHistory, setShowAllHistory] = useState(false);
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -16,6 +17,10 @@ export const ChatPanel = ({ chatHistory, setChatHistory, onSendMessage, loading,
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatHistory, loading]);
+
+  const DISPLAY_LIMIT = 6;
+  const displayedHistory = showAllHistory ? chatHistory : chatHistory.slice(-DISPLAY_LIMIT);
+  const hiddenCount = chatHistory.length - displayedHistory.length;
 
   return (
     <div className="border border-slate-700/60 bg-[#12151f]/90 rounded-3xl p-5 shadow-2xl flex flex-col h-full backdrop-blur-md justify-between">
@@ -48,7 +53,7 @@ export const ChatPanel = ({ chatHistory, setChatHistory, onSendMessage, loading,
       </div>
 
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto pr-1 space-y-4 font-sans text-xs sm:text-sm custom-scrollbar min-h-[300px]">
+      <div className="flex-1 overflow-y-auto pr-1 space-y-4 font-sans text-xs sm:text-sm custom-scrollbar min-h-[300px] max-h-[500px] lg:max-h-none">
         {chatHistory.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-slate-500 text-center space-y-3 py-10">
             <div className="w-12 h-12 bg-slate-800/60 border border-slate-700 rounded-2xl flex items-center justify-center text-teal-400">
@@ -64,7 +69,19 @@ export const ChatPanel = ({ chatHistory, setChatHistory, onSendMessage, loading,
             </div>
           </div>
         ) : (
-          chatHistory.map((msg: any, i: number) => (
+          <>
+            {hiddenCount > 0 && !showAllHistory && (
+              <div className="flex justify-center pb-2">
+                <button
+                  onClick={() => setShowAllHistory(true)}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-[#1a2133] hover:bg-[#232c42] text-slate-300 border border-slate-700/50 rounded-full text-xs transition-colors"
+                >
+                  <ChevronUp className="w-3.5 h-3.5" />
+                  Cargar {hiddenCount} mensajes anteriores
+                </button>
+              </div>
+            )}
+            {displayedHistory.map((msg: any, i: number) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div
                 className={`max-w-[92%] rounded-2xl p-4 shadow-md ${
@@ -90,7 +107,8 @@ export const ChatPanel = ({ chatHistory, setChatHistory, onSendMessage, loading,
                 </div>
               </div>
             </div>
-          ))
+          ))}
+          </>
         )}
 
         {loading && (
