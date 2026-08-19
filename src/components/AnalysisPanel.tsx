@@ -81,20 +81,41 @@ export const AnalysisPanel = ({ metrics, loading, onRequestAnalysis }: AnalysisP
 
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
-          <div className="bg-[#1f1520] border border-rose-900/40 rounded-xl p-3 text-center">
-            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Avg Power</span>
-            <span className="text-base sm:text-lg font-bold font-mono text-white">{metrics.avgPower} W</span>
-          </div>
+          {metrics.type === 'Run' || metrics.type === 'TrailRun' || metrics.type === 'Walk' || metrics.type === 'Hike' ? (
+            <>
+              <div className="bg-[#1f1520] border border-rose-900/40 rounded-xl p-3 text-center">
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Avg Pace</span>
+                <span className="text-base sm:text-lg font-bold font-mono text-white">{metrics.avgPace || '0:00'}/km</span>
+              </div>
 
-          <div className="bg-[#1f1520] border border-rose-900/40 rounded-xl p-3 text-center">
-            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Norm Power</span>
-            <span className="text-base sm:text-lg font-bold font-mono text-white">{metrics.normPower} W</span>
-          </div>
+              <div className="bg-[#1f1520] border border-rose-900/40 rounded-xl p-3 text-center">
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Distance</span>
+                <span className="text-base sm:text-lg font-bold font-mono text-white">{metrics.distance || 0} km</span>
+              </div>
 
-          <div className="bg-[#1f1520] border border-rose-900/40 rounded-xl p-3 text-center">
-            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">IF Factor</span>
-            <span className="text-base sm:text-lg font-bold font-mono text-rose-300">{metrics.ifFactor}</span>
-          </div>
+              <div className="bg-[#1f1520] border border-rose-900/40 rounded-xl p-3 text-center">
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Elevation</span>
+                <span className="text-base sm:text-lg font-bold font-mono text-rose-300">+{metrics.elevation || 0} m</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="bg-[#1f1520] border border-rose-900/40 rounded-xl p-3 text-center">
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Avg Power</span>
+                <span className="text-base sm:text-lg font-bold font-mono text-white">{metrics.avgPower} W</span>
+              </div>
+
+              <div className="bg-[#1f1520] border border-rose-900/40 rounded-xl p-3 text-center">
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">Norm Power</span>
+                <span className="text-base sm:text-lg font-bold font-mono text-white">{metrics.normPower} W</span>
+              </div>
+
+              <div className="bg-[#1f1520] border border-rose-900/40 rounded-xl p-3 text-center">
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">IF Factor</span>
+                <span className="text-base sm:text-lg font-bold font-mono text-rose-300">{metrics.ifFactor}</span>
+              </div>
+            </>
+          )}
 
           <div className="bg-[#1f1520] border border-rose-900/40 rounded-xl p-3 text-center">
             <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block">TSS Load</span>

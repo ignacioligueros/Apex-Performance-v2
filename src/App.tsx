@@ -85,15 +85,29 @@ export default function App() {
         return;
       }
 
+      // Helper function for pace
+      const formatPace = (speedMs: number) => {
+        if (!speedMs) return "0:00";
+        const minPerKm = 1000 / (speedMs * 60);
+        const mins = Math.floor(minPerKm);
+        const secs = Math.round((minPerKm - mins) * 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+      };
+
       // Parse activities to historical sessions
       const parsedHistory = activities.map((act: any) => ({
         id: act.id, // Store ID for fetching streams later
         date: new Date(act.start_date).toLocaleDateString('en-GB').slice(0,5).replace('/','-'), // DD-MM
         title: act.name,
-        tss: act.suffer_score || Math.round(act.distance / 1000 * 10) || 40, // rough proxy if no suffer score
+        type: act.sport_type || act.type,
+        distance: act.distance ? Number((act.distance / 1000).toFixed(2)) : 0,
+        movingTime: act.moving_time || 0,
+        elevation: act.total_elevation_gain || 0,
+        avgPace: formatPace(act.average_speed),
+        tss: act.suffer_score || Math.round((act.distance || 0) / 1000 * 10) || 40, // rough proxy if no suffer score
         avgPower: act.average_watts || 0,
         normPower: act.weighted_average_watts || 0,
-        ifFactor: act.average_watts ? (act.average_watts / 225).toFixed(2) : 0,
+        ifFactor: act.average_watts ? Number((act.average_watts / 225).toFixed(2)) : 0,
         avgHr: act.average_heartrate || 0,
         maxHr: act.max_heartrate || 0
       }));
@@ -104,6 +118,11 @@ export default function App() {
         ...prev,
         title: latest.title,
         date: latest.date,
+        type: latest.type,
+        distance: latest.distance,
+        movingTime: latest.movingTime,
+        elevation: latest.elevation,
+        avgPace: latest.avgPace,
         avgPower: latest.avgPower,
         normPower: latest.normPower,
         tss: latest.tss,
@@ -349,6 +368,11 @@ export default function App() {
       ...prev,
       title: session.title,
       date: session.date,
+      type: session.type,
+      distance: session.distance,
+      movingTime: session.movingTime,
+      elevation: session.elevation,
+      avgPace: session.avgPace,
       avgPower: session.avgPower || prev.avgPower,
       normPower: session.normPower || prev.normPower,
       tss: session.tss || prev.tss,
@@ -416,7 +440,12 @@ export default function App() {
               metrics={metrics} 
               loading={loading}
               onRequestAnalysis={() => {
-                sendMessageToApex(`Analiza mi entrenamiento: ${metrics.title}. Potencia media: ${metrics.avgPower}W, NP: ${metrics.normPower}W, HR: ${metrics.avgHr}bpm. Por favor, entrega un resumen del diagnóstico usando el formato "Feedback de Apex" y "Prescripción Mañana", y añade una breve sección explicando cómo determinas el estado de mis tendones (boulder) basándote en la carga actual y recuperación.`, true);
+                let metricsText = `Potencia media: ${metrics.avgPower}W, NP: ${metrics.normPower}W, HR: ${metrics.avgHr}bpm`;
+                if (metrics.type === 'Run' || metrics.type === 'TrailRun' || metrics.type === 'Walk' || metrics.type === 'Hike') {
+                  metricsText = `Ritmo medio: ${metrics.avgPace || '0:00'}/km, Distancia: ${metrics.distance || 0}km, Desnivel: +${metrics.elevation || 0}m, HR: ${metrics.avgHr}bpm`;
+                }
+                
+                sendMessageToApex(`Analiza mi entrenamiento: ${metrics.title}. ${metricsText}. Por favor, entrega un resumen del diagnóstico usando el formato "Feedback de Apex" y "Prescripción Mañana".`, true);
               }}
             />
           </div>

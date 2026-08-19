@@ -15,6 +15,11 @@ export interface HistoricalSession {
   id?: string;
   date: string;
   title: string;
+  type?: string;
+  distance?: number;
+  movingTime?: number;
+  elevation?: number;
+  avgPace?: string;
   tss: number;
   avgPower?: number;
   normPower?: number;
@@ -32,6 +37,11 @@ export interface StrengthMetrics {
 export interface WorkoutMetrics {
   title: string;
   date: string;
+  type?: string;
+  distance?: number;
+  movingTime?: number;
+  elevation?: number;
+  avgPace?: string;
   avgPower: number;
   normPower: number;
   tss: number;
