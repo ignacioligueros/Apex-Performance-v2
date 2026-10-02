@@ -297,11 +297,37 @@ export default function App() {
     setChatHistory(newHistory);
     saveChatHistory(newHistory);
 
+    const now = new Date();
+    const dayOfWeek = now.toLocaleDateString('es-CL', { weekday: 'long' });
+    const capitalizedDay = dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1);
+    const dateFormatted = now.toLocaleDateString('es-CL', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    const timeFormatted = now.toLocaleTimeString('es-CL', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    const temporalContext = {
+      todayDate: dateFormatted,
+      todayDay: capitalizedDay,
+      time: timeFormatted,
+      iso: now.toISOString()
+    };
+
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ history: tempHistory, message, metrics, model: aiModel })
+        body: JSON.stringify({ 
+          history: tempHistory, 
+          message, 
+          metrics, 
+          model: aiModel,
+          temporalContext
+        })
       });
 
       if (!response.ok) {

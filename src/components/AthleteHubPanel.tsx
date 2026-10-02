@@ -117,8 +117,8 @@ export const AthleteHubPanel = ({
               TINDEQ MAX
               {metrics.strength.tindeqMax > 0 && (
                 isLoggedIn 
-                  ? <Cloud className="w-3.5 h-3.5 text-teal-400 cursor-help" title="Guardado en tu cuenta en la nube" />
-                  : <AlertCircle className="w-3.5 h-3.5 text-rose-400 cursor-help" title="Inicia sesión arriba para guardar este dato" />
+                  ? <span title="Guardado en tu cuenta en la nube"><Cloud className="w-3.5 h-3.5 text-teal-400 cursor-help" /></span>
+                  : <span title="Inicia sesión arriba para guardar este dato"><AlertCircle className="w-3.5 h-3.5 text-rose-400 cursor-help" /></span>
               )}
             </span>
             <div className="flex items-end gap-1">

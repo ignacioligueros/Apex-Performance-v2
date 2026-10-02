@@ -1,11 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, Loader2, User, Zap, ChevronUp } from 'lucide-react';
+import { Send, Sparkles, Loader2, User, Zap, ChevronUp, Calendar } from 'lucide-react';
 import Markdown from 'react-markdown';
 
 export const ChatPanel = ({ chatHistory, setChatHistory, onSendMessage, loading, selectedModel, setSelectedModel }: any) => {
   const [message, setMessage] = useState('');
   const [showAllHistory, setShowAllHistory] = useState(false);
   const endOfMessagesRef = useRef<HTMLDivElement>(null);
+
+  const todayLabel = new Date().toLocaleDateString('es-CL', { 
+    weekday: 'short', 
+    day: 'numeric', 
+    month: 'short' 
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     if (e && e.preventDefault) e.preventDefault();
@@ -34,9 +40,14 @@ export const ChatPanel = ({ chatHistory, setChatHistory, onSendMessage, loading,
               Consult Apex
             </h2>
           </div>
-          <p className="text-xs text-slate-400 font-sans mt-0.5 flex items-center gap-2">
-            <span>Chat with your Performance AI</span>
-          </p>
+          <div className="text-xs text-slate-400 font-sans mt-0.5 flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <span>Chat con tu Performance AI</span>
+            <span className="text-slate-600 hidden sm:inline">•</span>
+            <span className="inline-flex items-center gap-1 text-[11px] text-teal-300 font-mono bg-teal-950/40 border border-teal-800/40 px-2 py-0.5 rounded-md">
+              <Calendar className="w-3 h-3 text-teal-400" />
+              <span className="capitalize">{todayLabel}</span>
+            </span>
+          </div>
         </div>
         <div className="shrink-0">
           <select 
@@ -134,7 +145,7 @@ export const ChatPanel = ({ chatHistory, setChatHistory, onSendMessage, loading,
                 handleSubmit(e); 
               }
             }}
-            placeholder="Type your question here... (Shift+Enter for new line)"
+            placeholder="Pregúntale a Apex (ej: ¿qué me toca mañana?, ¿cómo anduve hoy?)..."
             rows={1}
             className="flex-1 bg-[#090d14] text-slate-100 placeholder-slate-500 px-4 py-3 rounded-xl border border-slate-800 focus:outline-none focus:border-teal-500 text-xs sm:text-sm transition-all resize-y min-h-[44px] max-h-[150px]"
             disabled={loading}
